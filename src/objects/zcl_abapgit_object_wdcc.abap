@@ -85,9 +85,11 @@ CLASS zcl_abapgit_object_wdcc IMPLEMENTATION.
         lo_cfg->set_save_data( ls_data ).
 
         lo_cfg->set_config_description( is_outline ).
+        lv_operation = if_wdr_cfg_constants=>c_cts_operation-e_create.
+        lo_cfg->do_next_step( CHANGING c_operation = lv_operation ).
         lv_operation = if_wdr_cfg_constants=>c_cts_operation-e_save.
         lo_cfg->do_next_step( CHANGING c_operation = lv_operation ).
-        lo_cfg->do_next_step( CHANGING c_operation = lv_operation ).
+
 
 
       CATCH cx_wd_configuration.
