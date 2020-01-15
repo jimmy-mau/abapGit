@@ -5,71 +5,104 @@ CLASS zcl_abapgit_object_wdyn DEFINITION PUBLIC INHERITING FROM zcl_abapgit_obje
     ALIASES mo_files FOR zif_abapgit_object~mo_files.
 
   PROTECTED SECTION.
-  PRIVATE SECTION.
+private section.
 
-    DATA:
-      mt_components TYPE TABLE OF wdy_ctlr_compo_vrs,
-      mt_sources    TYPE TABLE OF wdy_ctlr_compo_source_vrs.
+  data:
+    mt_components TYPE TABLE OF wdy_ctlr_compo_vrs .
+  data:
+    mt_sources    TYPE TABLE OF wdy_ctlr_compo_source_vrs .
+  data MT_UI_TEXTS TYPE TABLE OF wdy_ui_text ..
 
-    METHODS:
-      get_limu_objects
-        RETURNING VALUE(rt_objects) TYPE wdy_md_transport_keys,
-      read
-        RETURNING VALUE(rs_component) TYPE wdy_component_metadata
-        RAISING   zcx_abapgit_exception,
-      read_controller
-        IMPORTING is_key               TYPE wdy_md_controller_key
-        RETURNING VALUE(rs_controller) TYPE wdy_md_controller_meta_data
-        RAISING   zcx_abapgit_exception,
-      read_definition
-        IMPORTING is_key               TYPE wdy_md_component_key
-        RETURNING VALUE(rs_definition) TYPE wdy_md_component_meta_data
-        RAISING   zcx_abapgit_exception,
-      read_view
-        IMPORTING is_key         TYPE wdy_md_view_key
-        RETURNING VALUE(rs_view) TYPE wdy_md_view_meta_data
-        RAISING   zcx_abapgit_exception,
-      recover_controller
-        IMPORTING is_controller TYPE wdy_md_controller_meta_data
-        RAISING   zcx_abapgit_exception,
-      recover_definition
-        IMPORTING is_definition TYPE wdy_md_component_meta_data
-                  iv_package    TYPE devclass
-        RAISING   zcx_abapgit_exception,
-      recover_view
-        IMPORTING is_view TYPE wdy_md_view_meta_data
-        RAISING   zcx_abapgit_exception,
-      delta_controller
-        IMPORTING is_controller   TYPE wdy_md_controller_meta_data
-        RETURNING VALUE(rs_delta) TYPE svrs2_xversionable_object
-        RAISING   zcx_abapgit_exception,
-      delta_definition
-        IMPORTING is_definition     TYPE wdy_md_component_meta_data
-                  VALUE(iv_package) TYPE devclass
-        RETURNING VALUE(rs_delta)   TYPE svrs2_xversionable_object
-        RAISING   zcx_abapgit_exception,
-      delta_view
-        IMPORTING is_view         TYPE wdy_md_view_meta_data
-        RETURNING VALUE(rs_delta) TYPE svrs2_xversionable_object
-        RAISING   zcx_abapgit_exception,
-      add_fm_param_exporting
-        IMPORTING iv_name  TYPE string
-                  ig_value TYPE any
-        CHANGING  ct_param TYPE abap_func_parmbind_tab,
-      add_fm_param_tables
-        IMPORTING iv_name  TYPE string
-        CHANGING  ct_value TYPE ANY TABLE
-                  ct_param TYPE abap_func_parmbind_tab,
-      add_fm_exception
-        IMPORTING iv_name      TYPE string
-                  iv_value     TYPE i
-        CHANGING  ct_exception TYPE abap_func_excpbind_tab.
-
+  methods GET_LIMU_OBJECTS
+    returning
+      value(RT_OBJECTS) type WDY_MD_TRANSPORT_KEYS .
+  methods READ
+    returning
+      value(RS_COMPONENT) type WDY_COMPONENT_METADATA
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods READ_CONTROLLER
+    importing
+      !IS_KEY type WDY_MD_CONTROLLER_KEY
+    returning
+      value(RS_CONTROLLER) type WDY_MD_CONTROLLER_META_DATA
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods READ_DEFINITION
+    importing
+      !IS_KEY type WDY_MD_COMPONENT_KEY
+    returning
+      value(RS_DEFINITION) type WDY_MD_COMPONENT_META_DATA
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods READ_VIEW
+    importing
+      !IS_KEY type WDY_MD_VIEW_KEY
+    returning
+      value(RS_VIEW) type WDY_MD_VIEW_META_DATA
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods RECOVER_CONTROLLER
+    importing
+      !IS_CONTROLLER type WDY_MD_CONTROLLER_META_DATA
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods RECOVER_DEFINITION
+    importing
+      !IS_DEFINITION type WDY_MD_COMPONENT_META_DATA
+      !IV_PACKAGE type DEVCLASS
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods RECOVER_VIEW
+    importing
+      !IS_VIEW type WDY_MD_VIEW_META_DATA
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods DELTA_CONTROLLER
+    importing
+      !IS_CONTROLLER type WDY_MD_CONTROLLER_META_DATA
+    returning
+      value(RS_DELTA) type SVRS2_XVERSIONABLE_OBJECT
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods DELTA_DEFINITION
+    importing
+      !IS_DEFINITION type WDY_MD_COMPONENT_META_DATA
+      value(IV_PACKAGE) type DEVCLASS
+    returning
+      value(RS_DELTA) type SVRS2_XVERSIONABLE_OBJECT
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods DELTA_VIEW
+    importing
+      !IS_VIEW type WDY_MD_VIEW_META_DATA
+    returning
+      value(RS_DELTA) type SVRS2_XVERSIONABLE_OBJECT
+    raising
+      ZCX_ABAPGIT_EXCEPTION .
+  methods ADD_FM_PARAM_EXPORTING
+    importing
+      !IV_NAME type STRING
+      !IG_VALUE type ANY
+    changing
+      !CT_PARAM type ABAP_FUNC_PARMBIND_TAB .
+  methods ADD_FM_PARAM_TABLES
+    importing
+      !IV_NAME type STRING
+    changing
+      !CT_VALUE type ANY TABLE
+      !CT_PARAM type ABAP_FUNC_PARMBIND_TAB .
+  methods ADD_FM_EXCEPTION
+    importing
+      !IV_NAME type STRING
+      !IV_VALUE type I
+    changing
+      !CT_EXCEPTION type ABAP_FUNC_EXCPBIND_TAB .
 ENDCLASS.
 
 
 
-CLASS zcl_abapgit_object_wdyn IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_OBJECT_WDYN IMPLEMENTATION.
 
 
   METHOD add_fm_exception.
@@ -321,6 +354,8 @@ CLASS zcl_abapgit_object_wdyn IMPLEMENTATION.
     ls_obj_old-wdyv-vshpl = is_view-vsh_placeholders.
     ls_obj_old-wdyv-views = is_view-viewset_properties.
 
+    ls_obj_old-wdyv-uitxt = mt_ui_texts.
+
     CALL FUNCTION 'SVRS_MAKE_OBJECT_DELTA'
       EXPORTING
         obj_old              = ls_obj_new
@@ -365,6 +400,8 @@ CLASS zcl_abapgit_object_wdyn IMPLEMENTATION.
 
     CLEAR mt_components.
     CLEAR mt_sources.
+    CLEAR mt_ui_texts.
+
 
     lt_objects = get_limu_objects( ).
 
@@ -616,6 +653,7 @@ CLASS zcl_abapgit_object_wdyn IMPLEMENTATION.
         viewset_properties     = rs_view-viewset_properties
         psmodilog              = lt_psmodilog
         psmodisrc              = lt_psmodisrc
+        ui_texts               = mt_ui_texts
       EXCEPTIONS
         not_existing           = 1
         OTHERS                 = 2.
@@ -755,6 +793,8 @@ CLASS zcl_abapgit_object_wdyn IMPLEMENTATION.
                   CHANGING cg_data = mt_components ).
     io_xml->read( EXPORTING iv_name  = 'SOURCES'
                   CHANGING cg_data = mt_sources ).
+    io_xml->read( EXPORTING iv_name  = 'UI_TEXTS'
+                  CHANGING cg_data = mt_ui_texts ).
 
     ls_component-comp_metadata-definition-author = sy-uname.
     ls_component-comp_metadata-definition-createdon = sy-datum.
@@ -841,6 +881,8 @@ CLASS zcl_abapgit_object_wdyn IMPLEMENTATION.
                  iv_name = 'COMPONENTS' ).
     io_xml->add( ig_data = mt_sources
                  iv_name = 'SOURCES' ).
+    io_xml->add( ig_data = mt_ui_texts
+                 iv_name = 'UI_TEXTS' ).
 
   ENDMETHOD.
 ENDCLASS.
